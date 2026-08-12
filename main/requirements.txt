@@ -1,0 +1,27 @@
+# main/ — RAG 检索增强生成流水线依赖
+# 安装: .venv/Scripts/python.exe -m pip install -r requirements.txt   (Windows)
+#       .venv/bin/python -m pip install -r requirements.txt           (Unix)
+#
+# 说明: 以下版本取自项目 .venv 实际安装版本,保证本地可复现运行。
+
+# ===== RAG 流水线 (main.py) =====
+langchain-community==0.4.2             # 多格式文档加载器 (PDFPlumber/Text/Unstructured/CSV 等)
+langchain-text-splitters==1.1.2       # 文本分块 (RecursiveCharacterTextSplitter)
+pdfplumber==0.11.10                    # langchain PDFPlumberLoader 底层 PDF 解析引擎
+unstructured==0.25.2                   # langchain Unstructured 系列加载器底层 (Word/PPT/Excel/Markdown/XML/HTML)
+sentence-transformers==5.7.0          # bge-small-zh-v1.5 嵌入模型加载与 encode
+transformers==5.15.0                    # bge-reranker-v2-m3 cross-encoder 加载 (AutoModel/AutoTokenizer)
+pymilvus==2.6.17                      # Milvus 向量库 client (IP/FLAT 索引, 余弦相似度)
+milvus-lite==2.6.16                   # pymilvus 可选依赖: Milvus Lite 本地文件存储后端
+jieba==0.42.1                         # 中文分词 (BM25 检索对文档与查询分词)
+rank-bm25==0.2.2                     # BM25 关键词检索 (与向量检索 RRF 融合召回)
+
+# ===== 模型下载 (download_model.py) =====
+huggingface_hub==1.27.0                # snapshot_download 拉取 bge-small-zh-v1.5 / bge-reranker-v2-m3
+
+# ===== Agent LLM client (agent_full.py) =====
+openai==3.0.0                          # OpenAI 兼容 client (读 OPENAI_API_KEY / OPENAI_BASE_URL)
+httpx==0.28.1                          # 自定义 transport (verify=False, 跳过证书校验)
+
+# ===== 间接依赖 (sentence-transformers 需要,显式固定避免歧义) =====
+torch==2.13.0                          # sentence-transformers 底层依赖
